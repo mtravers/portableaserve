@@ -1,0 +1,18 @@
+#!/bin/bash
+
+pkg=htmlgen
+dir=/usr/share/common-lisp/source/$pkg
+
+case "$1" in
+    install|upgrade|abort-upgrade)
+	# Remove any old symlinks
+	test -h $dir && rm $dir 
+	;;
+    *)
+        echo "preinst called with unknown argument '$1'" >&2
+	;;
+esac
+
+#DEBHELPER#
+
+exit 0

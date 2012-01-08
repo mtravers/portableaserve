@@ -1,0 +1,39 @@
+Source: cl-portable-aserve
+Section: web
+Priority: optional
+Maintainer: Peter Van Eynde <pvaneynd@debian.org>
+Standards-Version: 3.6.1.1
+Build-Depends-Indep: debhelper (>= 4.0.0)
+
+Package: cl-aserve
+Architecture: all
+Depends: common-lisp-controller (>= 3.56), cl-acl-compat, cl-htmlgen
+Suggests: cl-webactions
+Description: Portable Aserve
+ A portable version of AllegroServe which is a web application server
+ for Common Lisp programs. It also includes an HTTP client function
+ for accessing web sites and retrieving data.
+
+Package: cl-acl-compat
+Architecture: all
+Depends: common-lisp-controller (>= 3.56), cl-ppcre, cl-puri
+Description: Compatibility layer for Allegro Common Lisp
+ A thin compatibility-layer that emulates library functions provided
+ by Allegro Common Lisp. It is used
+ to support a number of Franz's open-source packages which depend upon
+ such library functions.
+
+Package: cl-htmlgen
+Architecture: all
+Depends: common-lisp-controller (>= 3.56), cl-acl-compat
+Description: HTML generation library for Common Lisp programs
+ cl-htmlgen is Franz's library for generating HTML from Common Lisp programs.
+ It is limited to generating HTML code, so you may want to use the cl-lml2
+ Debian package for generating XHTML code.
+
+Package: cl-webactions
+Architecture: all
+Depends: common-lisp-controller (>= 3.56), cl-aserve
+Description: HTTP dispatch library for cl-aserve
+ Webactions is Franz's library for dispatching HTTP requests as well as 
+ processing HTML templates. It uses the cl-aserve package.

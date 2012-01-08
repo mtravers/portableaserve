@@ -1,0 +1,26 @@
+-*- text -*-
+
+This directory contains source that is needed to run Portable
+AllegroServe but is maintained elsewhere.  This code is included in
+CVS so that portableaserve can be run without the usual hunt for a
+gazillion libraries.
+
+A reasonable effort is made to provide current upstream versions of
+these libraries here; reports of outdated libraries are welcome
+(report to portableaserve-discuss@lists.sourceforge.net; thanks!).
+If one or more of these libraries are already installed on the
+system, the existing ones are used (thanks to asdf).
+
+What do we need?
+
+- asdf
+
+  Daniel Barlow's defsystem utility ("Another System Definition
+  Facility").  In an ideal world, this would be included with the
+  Lisp system.  For Debian, sbcl and OpenMCL version > 0.14, the
+  world is already ideal  :)
+
+- puri
+
+  Franz Inc. released their uri library under the same license as
+  AllegroServe, and Kevin Rosenberg made a portable version.

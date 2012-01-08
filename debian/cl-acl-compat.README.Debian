@@ -1,0 +1,14 @@
+Package cl-acl-compat
+---------------------
+
+ACL-COMPAT is a thin wrapper for ACL-functionality.
+
+You can use it:
+$ lisp
+* (require :acl-compat)
+
+More info about Portable Aserve, where acl-compat also resides, may be found on
+http://www.sourceforge.net/projects/portableaserve/
+
+Package maintainer:
+Stig E Sandoe <stig@users.sourceforge.net>

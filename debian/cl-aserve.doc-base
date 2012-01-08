@@ -1,0 +1,9 @@
+Document: cl-aserve
+Title: Aserve documentation
+Author: Franz, Inc
+Abstract: Documentation for the webserver Aserve
+Section: Lisp/Net
+
+Format: HTML
+Index: /usr/share/doc/cl-aserve/aserve.html
+Files: /usr/share/doc/cl-aserve/*.html

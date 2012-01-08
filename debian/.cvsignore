@@ -1,0 +1,7 @@
+tmp
+*.debhelper
+cl-acl-compat
+files
+*substvars
+{arch}
+.arch-ids

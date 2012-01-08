@@ -1,0 +1,95 @@
+#!/usr/bin/make -f
+
+pkg-compat	  := cl-acl-compat
+pkg-aserve	:= cl-aserve
+pkg-webact	:= cl-webactions
+pkg-html	:= cl-htmlgen
+
+name-compat	:= acl-compat
+name-aserve	:= aserve
+name-webact	:= webactions
+name-html	:= htmlgen
+
+clc-base	:= usr/share/common-lisp
+clc-systems	:= $(clc-base)/systems
+clc-source	:= $(clc-base)/source
+clc-aserve	:= $(clc-source)/$(name-aserve)
+clc-html	:= $(clc-source)/$(name-html)
+clc-compat	:= $(clc-source)/$(name-compat)
+clc-webact	:= $(clc-source)/$(name-webact)
+
+src-aserve	:= aserve/*.cl aserve/*.asd
+src-webact	:= aserve/webactions/*.cl aserve/webactions/*.asd aserve/webactions/clpcode
+src-html	:= aserve/htmlgen/*.cl aserve/htmlgen/*.asd
+src-compat	:= acl-compat/*.lisp acl-compat/*.asd acl-compat/allegro acl-compat/clisp acl-compat/cmucl acl-compat/lispworks acl-compat/mcl acl-compat/sbcl 
+
+doc-base	:= usr/share/doc
+
+examples	:= aserve/examples/*.cl aserve/examples/*.jpg \
+		aserve/examples/*.gif aserve/examples/*.txt
+
+build: 
+	dh_testdir
+#	make 
+	touch build
+
+clean:
+	dh_testdir
+	rm -f build
+	# Add here commands to clean up after the build process.
+#	-$(MAKE) clean
+	dh_clean
+
+# Build architecture-independent files here.
+binary-indep: build
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+	dh_installdirs -p $(pkg-aserve) $(clc-aserve) $(clc-systems)
+	dh_installdirs -p $(pkg-compat) $(clc-compat) $(clc-systems)
+	dh_installdirs -p $(pkg-html) $(clc-html) $(clc-systems)
+
+	dh_install -p $(pkg-aserve) $(src-aserve) $(clc-aserve)
+	dh_install -p $(pkg-webact) $(src-webact) $(clc-webact)
+	dh_install -p $(pkg-html) $(src-html) $(clc-html)
+	dh_install -p $(pkg-compat) $(src-compat) $(clc-compat)
+
+	dh_link -p $(pkg-aserve) $(clc-aserve)/$(name-aserve).asd $(clc-systems)/$(name-aserve).asd
+	dh_link -p $(pkg-webact) $(clc-webact)/$(name-webact).asd $(clc-systems)/$(name-webact).asd
+	dh_link -p $(pkg-compat) $(clc-compat)/$(name-compat).asd $(clc-systems)/$(name-compat).asd
+	dh_link -p $(pkg-html) $(clc-html)/$(name-html).asd $(clc-systems)/$(name-html).asd
+
+	dh_installdocs
+	gzip --best aserve/ChangeLog
+	mv aserve/ChangeLog.gz aserve/changelog.gz
+	dh_installdocs -p $(pkg-aserve) aserve/changelog.gz
+	gzip --best aserve/htmlgen/ChangeLog
+	mv aserve/htmlgen/ChangeLog.gz aserve/htmlgen/changelog.gz
+	dh_installdocs -p $(pkg-aserve) aserve/htmlgen/changelog.gz
+	gzip --best aserve/webactions/ChangeLog
+	mv aserve/webactions/ChangeLog.gz aserve/webactions/changelog.gz
+	dh_installdocs -p $(pkg-webact) aserve/webactions/changelog.gz
+	dh_installexamples -p $(pkg-aserve) $(examples)
+	dh_installchangelogs
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_makeshlibs
+	dh_md5sums
+	dh_builddeb
+
+source diff:                                                                  
+	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary
+

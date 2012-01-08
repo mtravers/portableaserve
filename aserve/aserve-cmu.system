@@ -1,0 +1,65 @@
+;;; -*- mode: lisp -*-
+
+(in-package :cl-user)
+
+;; Stig: if clc is present, we're a debian-package
+;; Rudi: Not if kludge-no-cclan is also present (see README.cmucl)
+#+(and common-lisp-controller (not kludge-no-cclan))
+(setf (logical-pathname-translations "aserve")
+      '(("examples;**;*.*.*" "/usr/share/doc/cl-aserve/examples/")
+	("**;*.*.*" "cl-library:;aserve;**;*.*.*")
+	))
+
+(mk:defsystem "ASERVE"
+  :source-pathname
+  #-common-lisp-controller
+  (translate-logical-pathname "aserve:")
+  ;; Stig: somehow things screw up if we translate here
+  #+common-lisp-controller
+  "aserve:"
+  :source-extension "cl"
+  :components (;;#-common-lisp-controller
+	       (:module "htmlgen"
+			:components ((:file "htmlgen")))
+	       ;;;; Stig: we might use above.. will check again later
+	       ;;#+common-lisp-controller
+	       ;;(:file "htmlgen")
+	       
+               (:file "macs")
+               (:file "main"
+                      :depends-on ("macs"))
+               (:file "headers"
+                      :depends-on ("main"))
+               (:file "parse"
+                      :depends-on ("main"))
+               (:file "decode"
+                      :depends-on ("main"))
+               (:file "publish"
+                      :depends-on ("main" "htmlgen"))
+               (:file "authorize"
+                      :depends-on ("main" "publish"))
+               (:file "log"
+                      :depends-on ("main"))
+               (:file "client"
+                      :depends-on ("main"))
+               (:file "proxy"
+                      :depends-on ("main")))
+  
+  ;; Stig: if we're a debian-package we should automagically load acl-compat
+  #+(and common-lisp-controller)
+  :depends-on
+  #+(and common-lisp-controller) (acl-compat)
+  :finally-do
+  (progn
+    (pushnew :aserve *features*)))
+
+#+cmu
+(defun init-aserve-cmu ()
+  ;; this isn't strictly necessary, but scheduling feels very coarse
+  ;; without startup-idle-and-top-level-loops, leading to answer delays
+  ;; of about 1s per request.
+  (unless (find-if
+         #'(lambda (proc) (string= (mp:process-name proc) "Top Level Loop"))
+         (mp:all-processes))
+  (mp::startup-idle-and-top-level-loops)))
+

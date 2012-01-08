@@ -1,0 +1,36 @@
+;;; -*- mode: lisp -*-
+
+(in-package :CL-USER)
+
+;; Stig: we're a debian-package if clc is present
+;; Rudi: Not if kludge-no-cclan is also present
+#+(and common-lisp-controller (not kludge-no-cclan))
+(setf (logical-pathname-translations "acl-compat")
+      '(("**;*.*.*" "cl-library:;acl-compat;**;*.*.*")))
+
+(mk:defsystem "ACL-COMPAT"
+    :source-pathname (make-pathname :directory
+                                    (pathname-directory *load-truename*)) ;"acl-compat:"
+;    :source-extension "lisp"
+;    :binary-pathname nil
+;    :binary-extension nil
+    :components ((:file "nregex")
+                 (:file "packages" :depends-on ("nregex"))
+                 (:file "lw-buffering" :depends-on ("packages"))
+                 (:file "acl-mp-cmu" :depends-on ("packages"))
+                 (:file "acl-excl-cmu" :depends-on ("packages" "nregex"))
+                 (:file "cmu-read-sequence")
+                 (:file "acl-socket-cmu"
+                        :depends-on ("packages" "acl-excl-cmu"
+                                     "chunked-stream-mixin"
+                                     "cmu-read-sequence"))
+                 (:file "acl-sys-cmu" :depends-on ("packages"))
+                 (:file "meta")
+                 (:file "uri" :depends-on ("meta"))
+                 (:file "chunked-stream-mixin"
+                        :depends-on ("packages" "acl-excl-cmu"
+                                     "lw-buffering")))
+    ;; Stig: if we're CMU and a debian-package, we need graystreams
+    #+(and cmu common-lisp-controller)
+    :depends-on
+    #+(and cmu common-lisp-controller) (cmucl-graystream))

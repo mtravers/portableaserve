@@ -1,0 +1,46 @@
+;;; -*- mode: lisp -*-
+
+(in-package "CL-USER")
+
+
+;There is a bug in OpenMCL where we can't create directories.
+;So we only put the :binary-pathname if the bin/OpenMCL directory is there.
+
+(let* ((dir (make-pathname :directory (append (pathname-directory *load-truename*) 
+                                              (list "bin" (lisp-implementation-type)))))
+       (bin-path (list :binary-pathname dir))
+       (bin-extension nil))
+  
+  #+openmcl (unless (probe-file dir) (setf bin-path nil))
+  #+openmcl (setf bin-extension (list :binary-extension "dfsl")) 
+  
+  (eval
+   
+   `(mk:defsystem "ASERVE"
+      :source-pathname (translate-logical-pathname "aserve:")
+      :source-extension "cl"
+      ,@bin-path
+      ,@bin-extension
+      :components ((:module "htmlgen"
+                            :components ((:file "htmlgen")))
+                   (:file "macs")
+                   (:file "main"
+                          :depends-on ("macs"))
+                   (:file "headers"
+                          :depends-on ("main"))
+                   (:file "parse"
+                          :depends-on ("main"))
+                   (:file "decode"
+                          :depends-on ("main"))
+                   (:file "publish"
+                          :depends-on ("htmlgen"))
+                   (:file "authorize"
+                          :depends-on ("main"))
+                   (:file "log"
+                          :depends-on ("main"))
+                   (:file "client"
+                          :depends-on ("main"))
+                   (:file "proxy"
+                          :depends-on ("main"))))
+   
+   ))

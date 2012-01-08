@@ -1,0 +1,21 @@
+The Debian Package cl-portable-aserve
+-------------------------------------
+
+Note: On CMUCL, this package also requires the Debian package
+cmucl-source. However, cmucl-source package is not included as a
+dependency for cl-portable-aserve since cl-portable-aserve can be used
+with other CL implementations which would not require cmucl-source.
+
+Example files may be found in:
+/usr/share/doc/cl-aserve/examples/
+
+More info about Portable Aserve may be found on
+http://www.sourceforge.net/projects/portableaserve/
+
+*** INCOMPATIBILITY NOTICE ***
+
+The webactions module is not yet completely portable. Currently, it
+compiles only on Lispworks and Allegro. Patches will be welcomed
+upstream.
+
+ -- Kevin M. Rosenberg <kmr@debian.org>, Sat Aug 21 11:53:11 2004
