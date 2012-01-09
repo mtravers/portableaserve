@@ -1,3 +1,19 @@
+README - github / mt version
+
+This is a fork (in the loose sense) of the main version of Portable AllegroServe, which
+seems kind of neglected.  Original version may be found at:
+  http://portableaserve.sourceforge.net/  
+
+The first commit here represents the state of the Sourceforge version on 8-Jan-2012. Changes
+since then are local (unless someone ports them back).
+
+AllegroServe underlies the WuWei package of web development utilities, which might be of interest: 
+  http://wuwei.name
+
+Mike Travers
+
+----------------------------------------------------------------
+
 README --
 
 This is a short description of what you will find

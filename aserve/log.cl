@@ -127,7 +127,8 @@
 	    (macrolet ((do-log ()
 			 '(progn (format stream
 				  "~a - - [~a] ~s ~s ~s~%"
-				  (acl-compat.socket:ipaddr-to-dotted ipaddr)
+				  (or (header-slot-value req :x-forwarded-for) ;+++ for EC2 UNTESTED
+				      (acl-compat.socket:ipaddr-to-dotted ipaddr))
 				  (maybe-universal-time-to-date time)
 				  (request-raw-request req)
 				  code

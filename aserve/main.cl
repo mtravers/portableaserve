@@ -586,19 +586,20 @@ Problems with protocol may occur." (ef-name ef)))))
 
 
 (defmacro atomic-incf (var)
-  #+openmcl-native-threads
-  `(ccl::atomic-incf ,var)
+;;; mt +++ these are giving me problems in Clozure Common Lisp Version 1.7-r14925M, so reverting to acl-compat version
+;  #+openmcl-native-threads
+;  `(ccl::atomic-incf ,var)
   #+sbcl
   `(acl-compat.mp::atomic-incf ,var)
-  #-(or openmcl-native-threads sbcl)
+  #-(or  sbcl); openmcl-native-threads
   `(acl-compat.mp:without-scheduling (incf ,var)))
 
 (defmacro atomic-decf (var)
-  #+openmcl-native-threads
-  `(ccl::atomic-decf ,var)
+;  #+openmcl-native-threads
+;  `(ccl::atomic-decf ,var)
   #+sbcl
   `(acl-compat.mp::atomic-decf ,var)
-  #-(or openmcl-native-threads sbcl)
+  #-(or sbcl) ; openmcl-native-threads
   `(acl-compat.mp:without-scheduling (decf ,var)))
 
 (defun atomic-change-wserver-free-workers (server incf)
@@ -1713,7 +1714,8 @@ by keyword symbols and not by strings"
 		    (return-from read-http-request nil))
 
 	    ; insert the host name and port into the uri
-	    (let ((host (header-slot-value req :host)))
+	    (let ((host (or (header-slot-value req :x-forwarded-server) ;mt addition for EC2 (+++UNTESTED+++)
+			    (header-slot-value req :host))))
 	      (if* host
 		 then (let ((colonpos (find-it #\: host 0 (length host)))
 			    (uri (request-uri req))
