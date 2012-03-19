@@ -2614,8 +2614,10 @@ in get-multipart-sequence"))
 
       (if* post
 	 then (if* (and (eq (request-method req) :post)
-			(equal (header-slot-value req :content-type)
-			    "application/x-www-form-urlencoded"))
+			(string-equal ; sometimes other stuff appears after type and must be ignoresd
+			 (header-slot-value req :content-type)
+			 "application/x-www-form-urlencoded"
+			 :end1 33))
 		 then (setf res
 			(append res
 				(form-urlencoded-to-query
